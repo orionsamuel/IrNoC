@@ -3,9 +3,9 @@
 #include "buffer.h"
 #include "routing.h"
 #include "arbiter.h"
+#include "parameters.h"
 
 using namespace std;
-
 
 SC_MODULE(router){
 	//Posição em que o roteador se encontra
@@ -570,16 +570,6 @@ SC_MODULE(router){
 		
 	}
 
-	void print(){
-		//cout << bfE->din.payload << endl;
-		//cout << rtgS->portDestiny << endl;
-	}
-
-	void deadline_count(){
-		
-	}
-
-
 	SC_CTOR(router){
 		//Instanciando o controle de fluxo
 		fcN = new flow_control("fcN");
@@ -626,9 +616,6 @@ SC_MODULE(router){
 		arbW->clk(clk);
 		arbL->clk(clk);
 
-
-		SC_METHOD(print);
-		sensitive << clk.pos();
 		SC_METHOD(map_fc);
 		sensitive << clk.pos();
 		SC_METHOD(map_bf);
@@ -641,8 +628,5 @@ SC_MODULE(router){
 		sensitive << clk.pos();
 		SC_METHOD(request_arbiter);
 		sensitive << clk.pos();
-		SC_METHOD(deadline_count);
-		sensitive << clk.pos();
-
 	}
 };

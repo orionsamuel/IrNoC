@@ -21,32 +21,6 @@ using namespace std;
 #define END_PACKET 3
 #define SIZE_FLIT_PACKET 5
 
-#define SIZE_POPULATION 50
-
-struct table {
-	int destiny;
-	int port;
-	int hops;
-};
-
-typedef vector <table> routing_table;
-
-struct flits {
-	int type;
-	int payload;
-	int destiny;
-	int priority;
-};
-
-typedef flits flit;
-
-typedef queue<flit> fila_flits;
-
-struct packet {
-	flit flit_packet[SIZE_FLIT_PACKET];
-	int destiny;
-};
-
 struct trafegoRede {
 	int origem;
 	int destino;

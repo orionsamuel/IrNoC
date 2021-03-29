@@ -3,6 +3,7 @@
 #include "buffer.h"
 #include "routing.h"
 #include "arbiter_vc.h"
+#include "parameters.h"
 
 using namespace std;
 
@@ -1121,16 +1122,6 @@ SC_MODULE(router_2){
 		
 	}
 
-	void print(){
-		//cout << bfE->din.payload << endl;
-		//cout << rtgS->portDestiny << endl;
-	}
-
-	void deadline_count(){
-		
-	}
-
-
 	SC_CTOR(router_2){
 		//Instanciando o controle de fluxo
 		fcN = new flow_control_2("fcN");
@@ -1198,9 +1189,6 @@ SC_MODULE(router_2){
 		arbW->clk(clk);
 		arbL->clk(clk);
 
-
-		SC_METHOD(print);
-		sensitive << clk.pos();
 		SC_METHOD(map_fc);
 		sensitive << clk.pos();
 		SC_METHOD(map_bf);
@@ -1213,8 +1201,5 @@ SC_MODULE(router_2){
 		sensitive << clk.pos();
 		SC_METHOD(request_arbiter);
 		sensitive << clk.pos();
-		SC_METHOD(deadline_count);
-		sensitive << clk.pos();
-
 	}
 };

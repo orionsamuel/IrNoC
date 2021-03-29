@@ -1,8 +1,18 @@
 #include "systemc.h"
-#include "parameters.h"
+#include <queue>
 
 using namespace std;
 
+struct flits {
+	int type;
+	int payload;
+	int destiny;
+	int priority;
+};
+
+typedef flits flit;
+
+typedef queue<flit> fila_flits;
 
 SC_MODULE (Buffer){
 

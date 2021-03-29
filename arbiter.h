@@ -1,5 +1,4 @@
 #include "systemc.h"
-#include "parameters.h"
 
 using namespace std;
 
@@ -17,24 +16,24 @@ SC_MODULE(arbiter){
 		}else{
 			this->pointer = 1;
 		}
-		if ((bufferCircular[0] == 1)  && (this->pointer == NORTH)){
-			priority = NORTH;
+		if ((bufferCircular[0] == 1)  && (this->pointer == 0)){
+			priority = 0;
 			rd[0].write(1);
 		}
-		if ((bufferCircular[1] == 1)  && (this->pointer == EAST)){
-			priority = EAST;
+		if ((bufferCircular[1] == 1)  && (this->pointer == 1)){
+			priority = 1;
 			rd[1].write(1);
 		}
-		if ((bufferCircular[2] == 1)  && (this->pointer == SOUTH)){
-			priority = SOUTH;
+		if ((bufferCircular[2] == 1)  && (this->pointer == 2)){
+			priority = 2;
 			rd[2].write(1);
 		}
-		if ((bufferCircular[3] == 1)  && (this->pointer == WEST)){
-			priority = WEST;
+		if ((bufferCircular[3] == 1)  && (this->pointer == 3)){
+			priority = 3;
 			rd[3].write(1);
 		}
-		if ((bufferCircular[4] == 1)  && (this->pointer == LOCAL)){
-			priority = LOCAL;
+		if ((bufferCircular[4] == 1)  && (this->pointer == 4)){
+			priority = 4;
 			rd[4].write(1);
 		}
 		//cout << this->pointer << endl;

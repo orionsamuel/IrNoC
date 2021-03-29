@@ -5,9 +5,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include "router_2.h"
+#include "router.h"
 #include "caminho_min.h"
-
 
 SC_MODULE(NoC){
 
@@ -23,7 +22,7 @@ SC_MODULE(NoC){
 
 	conexoes conexoes_rede;
 
-	router_2 *rt[25];;
+	router *rt[25];;
 	routing_table table[25];
 	int router_count[25];
 
@@ -147,7 +146,7 @@ SC_MODULE(NoC){
 
 	SC_CTOR(NoC){
 		for(int i = 0; i < 25; i++){
-			rt[i] = new router_2("rt");
+			rt[i] = new router("rt");
 			rt[i]->clk(clk);
 		}
 
@@ -193,7 +192,6 @@ int sc_main (int argc, char* argv[]){
 
 	ifstream arquivoTrafego;
 	ofstream saidaDados;
-
 
 	//Instanciamento do arquivo de trafego
 	arquivoTrafego.open("01.txt", ios_base::in);
@@ -260,9 +258,12 @@ int sc_main (int argc, char* argv[]){
 		rede.rt[i]->position = i + 1;
 	}
 
+	rede.router_num = router_num;
+
 	conexoes mapeamento;
+	
 	srand (time(0));
-	for(int i = 0; i < 10; i++){
+	for(int i = 0; i < 12; i++){
 		Conexoes temp;
 		temp.primeiro = 1 + rand() % 10;
 		temp.segundo = 1 + rand() % 10;
@@ -270,8 +271,7 @@ int sc_main (int argc, char* argv[]){
 	}
 
 	rede.conexoes_rede = mapeamento;
-
-			
+		
 	//Preenchimento da matriz de adjacência
 	for(int i = 0; i < router_num; i++){
 		for(int j = 0; j < router_num; j++){
@@ -327,9 +327,7 @@ int sc_main (int argc, char* argv[]){
 			}
 		}
 	}
-
-
-
+	
 	for(int i = 0; i < (router_num + (router_num / 4)); i++){
 		if((router_count[(rede.conexoes_rede[i].primeiro)-1] == 0) && (router_count[(rede.conexoes_rede[i].segundo)-1] == 0)){
 			tab_aux[(rede.conexoes_rede[i].primeiro)-1][(rede.conexoes_rede[i].segundo)-1] = 0;
@@ -378,7 +376,6 @@ int sc_main (int argc, char* argv[]){
 			router_count[(rede.conexoes_rede[i].segundo)-1]++;
 		}
 	}
-
 			
 	//Tabelas de roteamento
 	for(int i = 0; i < router_num; i++){	
@@ -387,6 +384,7 @@ int sc_main (int argc, char* argv[]){
 		}
 	}
 
+	cout << "Aqui" << endl;
 
 	//Execução da simulação
 	sc_start(trafego[0].deadline, SC_NS);
@@ -413,10 +411,6 @@ int sc_main (int argc, char* argv[]){
 
 	if(deadline > 100){
 		deadline = 100;
-	}
-
-	for(int w = 0; w < router_num; w++){
-		rede.rt[w]->count = 0;
 	}
 
 	deadline_parcial = 0;

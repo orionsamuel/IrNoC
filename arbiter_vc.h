@@ -1,5 +1,4 @@
 #include "systemc.h"
-#include "parameters.h"
 
 using namespace std;
 
@@ -57,7 +56,6 @@ SC_MODULE(arbiter_vc){
 			priority = 9;
 			rd[4].write(1);
 		}
-		//cout << this->pointer << endl;
 	}
 
 
