@@ -8,11 +8,11 @@ public:
 	//int caminho[25][25];
 
 	void floyd(int dist[10][10], int caminho[10][10]){
-		for (int k = 0; k < 10; k++){
-        	for (int i = 0; i < 10; i++){
-            	for (int j = 0; j < 10; j++){
+		for(int k = 0; k < 10; k++){
+        	for(int i = 0; i < 10; i++){
+            	for(int j = 0; j < 10; j++){
             		//Calculo do menor caminho
-                	 if ( dist[i][k] + dist[k][j] < dist[i][j] ){
+                	 if(dist[i][k] + dist[k][j] < dist[i][j]){
                     	dist[i][j] = dist[i][k] + dist[k][j];
                     	//Preenchimento da tabela de caminho
                     	caminho[i][j] = k;
@@ -20,7 +20,7 @@ public:
                     	    caminho[i][j] = caminho[i][k];
                     	}
 
-                	} else if(dist[i][j] == 1){
+                	}else if(dist[i][j] == 1){
                 	    caminho[i][j] = j;
                 	}else if(dist[i][j] == 0){
                 	    caminho[i][j] = i;

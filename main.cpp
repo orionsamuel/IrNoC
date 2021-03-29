@@ -1,5 +1,7 @@
 #include "systemc.h"
 #include <iostream>
+#include <string>
+#include <vector>
 #include <cstdlib>
 #include <ctime>
 #include <sys/types.h>
@@ -160,6 +162,20 @@ SC_MODULE(NoC){
 
 using namespace std;
 
+const vector<string> split(const string& s, const char& c){
+    string buff{""};
+	vector<string> v;
+	
+	for(auto n:s){
+		if(n != c) buff+=n; else
+		if(n == c && buff != "") { v.push_back(buff); buff = ""; }
+	}
+
+	if(buff != "") v.push_back(buff);
+	
+	return v;
+}
+
 int sc_main (int argc, char* argv[]){
 
 	sc_clock clock("Clock", 10, SC_NS);
@@ -194,7 +210,7 @@ int sc_main (int argc, char* argv[]){
 	ofstream saidaDados;
 
 	//Instanciamento do arquivo de trafego
-	arquivoTrafego.open("01.txt", ios_base::in);
+	arquivoTrafego.open("comunicacao.txt", ios_base::in);
 	if (arquivoTrafego.is_open()){
 		arquivoTrafego.getline(linha, 100);
 		coreNumbers = atoi(linha);
@@ -261,13 +277,29 @@ int sc_main (int argc, char* argv[]){
 	rede.router_num = router_num;
 
 	conexoes mapeamento;
-	
-	srand (time(0));
-	for(int i = 0; i < 12; i++){
+
+	ifstream map("conexoes.txt", ios::in);
+	string line, content;
+
+	while(!map.eof()){
+		getline(map, line);
+		content += line;
+        content += " ";
+		
+	}
+
+	map.close();
+
+	vector<string> v{split(content, ' ')};
+
+	int contador = 0;
+
+	while (contador < v.size()){
 		Conexoes temp;
-		temp.primeiro = 1 + rand() % 10;
-		temp.segundo = 1 + rand() % 10;
+		temp.primeiro = stoi(v[contador]);
+		temp.segundo = stoi(v[contador+1]);
 		mapeamento.push_back(temp);
+		contador = contador + 2;
 	}
 
 	rede.conexoes_rede = mapeamento;
@@ -288,10 +320,7 @@ int sc_main (int argc, char* argv[]){
 				}
 			}						
 		}
-	}
-
-
-			
+	}			
 
 	for(int i = 0; i < router_num; i++){
 		for(int j = 0; j < router_num; j++){
@@ -301,10 +330,16 @@ int sc_main (int argc, char* argv[]){
 		}
 	}
 
+	for(int i = 0; i < 10; i++){
+		for(int j = 0; j < 10; j++){
+			caminho[i][j] = 0;
+		}
+	}
+
 
 	//Passagem dos valores das matrizes pro caminho mínimo	
 	cam.floyd(dist, caminho);
-
+	
 	//Preenchimento das tabelas de roteamento
 	int router_count[(router_num + (router_num / 4))];
 	int tab_aux[router_num][router_num];
@@ -376,15 +411,13 @@ int sc_main (int argc, char* argv[]){
 			router_count[(rede.conexoes_rede[i].segundo)-1]++;
 		}
 	}
-			
+
 	//Tabelas de roteamento
 	for(int i = 0; i < router_num; i++){	
 		for(int j = 0; j < coreNumbers; j++){
 			rede.table[i].push_back({j, tab_aux[i][caminho[i][j]], dist[i][j]});
 		}
 	}
-
-	cout << "Aqui" << endl;
 
 	//Execução da simulação
 	sc_start(trafego[0].deadline, SC_NS);
@@ -404,7 +437,7 @@ int sc_main (int argc, char* argv[]){
 		latencia_parcial = latencia_parcial + rede.rt[i]->latencia_rt;
 	}
 
-	string simulacao = "_saida_simulacao.txt";
+	string simulacao = "saida_simulacao.txt";
 
 	deadline = (deadline_parcial * 100) / total_packets;
 	latencia_media = ((latencia_parcial) - (zera_latencia * 4 * router_num) / total_packets);
@@ -420,16 +453,6 @@ int sc_main (int argc, char* argv[]){
 	saidaDados << deadline << endl;
 	saidaDados << latencia_media;
 	
-	saidaDados.close();
-			
-	string conex = "conexoes.txt";
-
-	saidaDados.open(conex);
-
-	for(int i = 0; i < 10; i++){
-		saidaDados << mapeamento[i].primeiro << " " << mapeamento[i].segundo << endl;
-	}
-
 	saidaDados.close();
 
 	return 0;
