@@ -1,2 +1,3 @@
 # IrNoC
-Simulador de uma Rede-em-Chip Irregular. Desenvolvido usando SystemC
+Network-on-Chip simulator for irregular networks and real time.
+
